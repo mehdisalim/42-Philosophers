@@ -2,15 +2,19 @@
 # define MAIN_H
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <pthread.h>
 
-typedef enum    e_philo
+typedef struct  s_vars
 {
-    NUMBER_OF_PHILOSOPHERS = 0,
-    TIME_TO_DIE = 1,
-    TIME_TO_EAT = 2,
-    TIME_TO_SLEEP = 3,
-    NUMBER_OF_TIMES_EACH_PHILOSOPHER_MUST_EAT = 4
-}   t_philo;
+    int numer_of_philos;
+    int n_o_philo;
+    int time_2_die;
+    int time_2_eat;
+    int time_2_sleep;
+    int notepme;
+    int fork;
+}   t_vars;
 
 #endif
