@@ -24,6 +24,8 @@ long	ft_atoi(const char *str)
 	long			result;
 	int				sign;
 
+	if (!str || !*str)
+		return (0);
 	i = 0;
 	result = 0;
 	sign = 1;
@@ -43,45 +45,74 @@ long	ft_atoi(const char *str)
 	return (result * sign);
 }
 
+void	sleeping(t_vars *vars)
+{
+	gettimeofday(&current_time, NULL);
+	printf("%d %d is sleeping\n", current_time.tv_usec, vars->philosopher);
+	my_usleep(vars->time_2_sleep);
+}
+
+void	eating(t_vars *vars)
+{
+	pthread_mutex_lock(&vars->forks);
+	
+	pthread_mutex_lock(&(vars + 1)->forks);
+	gettimeofday(&current_time, NULL);
+	printf("%d %d has taken a forks\n", current_time.tv_usec, vars->philosopher);
+	gettimeofday(&current_time, NULL);
+	printf("%d %d is eating\n", current_time.tv_usec, vars->philosopher);
+	
+	my_usleep(vars->time_2_eat);
+
+	pthread_mutex_unlock(&(vars + 1)->forks);
+	
+	pthread_mutex_unlock(&vars->forks);
+}
+
 void	*philosopher(void *arg)
 {
 	t_vars *vars = (t_vars *)arg;
-	pthread_mutex_lock(&vars->forks[vars->id]);
-	pthread_mutex_lock(&vars->forks[(vars->id + 1) % 5]);
-	printf("philo = %d\n", vars->philosophers[vars->id]);
-	// my_usleep(vars->time_2_eat);
-	pthread_mutex_unlock(&vars->forks[(vars->id + 1) % 5]);
-	pthread_mutex_unlock(&vars->forks[vars->id]);
+	int i = 0;
+	while (!vars->notepme || i < vars->notepme)
+	{
+		eating(vars);
+		sleeping(vars);
+		gettimeofday(&current_time, NULL);
+		printf("%d %d is thinking\n", current_time.tv_usec, vars->philosopher);
+		i++;
+	}
 	return 0;
 }
 
 int main(int ac, char **av)
 {
-	if (5 != ac)
-		return 0;
 
-	t_vars vars;
-	vars.number_of_philos = ft_atoi(av[1]);
-	vars.time_2_eat = ft_atoi(av[2]);
-	vars.time_2_die = ft_atoi(av[3]);
-	vars.time_2_sleep = ft_atoi(av[4]);
-	vars.philosophers = malloc((vars.number_of_philos + 1) * sizeof(int));
-	vars.philosophers[vars.number_of_philos + 1] = 0;
-	vars.forks = malloc((vars.number_of_philos + 1) * sizeof(pthread_mutex_t));
+	// my_usleep(ft_atoi(av[2]));
+	int n = ft_atoi(av[1]);
+	int eat = ft_atoi(av[2]);
+	int die = ft_atoi(av[3]);
+	int sleep = ft_atoi(av[4]);
+	int notepme = ft_atoi(av[5]);
+	t_vars *vars = malloc((n + 1) * sizeof(t_vars));
 	int i = -1;
-	while (++i < vars.number_of_philos)
-		vars.philosophers[i] = i + 1;
-	i = -1;
-	while (++i <= vars.number_of_philos)
-		pthread_mutex_init(&vars.forks[i], NULL);
-	pthread_t *threads = malloc((vars.number_of_philos + 1) * sizeof(pthread_t));
-	threads[vars.number_of_philos + 1] = 0;
-	i = -1;
-	while (++i < vars.number_of_philos)
+	while (++i < n)
 	{
-		vars.id = i;
-		pthread_create(&threads[i], NULL, philosopher, &vars);
+		vars[i].number_of_philos = n;
+		vars[i].time_2_eat = eat;
+		vars[i].time_2_die = die;
+		vars[i].time_2_sleep = sleep;
+		vars[i].notepme = notepme;
+		vars[i].philosopher = i + 1;
 	}
-
+	i = -1;
+	while (++i < n)
+		pthread_mutex_init(&vars[i].forks, NULL);
+	pthread_t *threads = malloc((n + 1) * sizeof(pthread_t));
+	i = -1;
+	while (++i < n)
+		pthread_create(&threads[i], NULL, philosopher, &vars[i]);
+	i = -1;
+	while (++i < n)
+		pthread_join(threads[i], NULL);
 	return (0);
 }
