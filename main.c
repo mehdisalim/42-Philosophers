@@ -1,7 +1,22 @@
 #include "main.h"
 
-int eating;
-int n_philosopher;
+
+struct timeval current_time;
+
+void	my_usleep(size_t n)
+{
+	struct timeval current_time2;
+	size_t ms, s;
+	gettimeofday(&current_time2, NULL);
+	ms = n + current_time2.tv_usec;
+	s = (n / 1000) + current_time2.tv_sec;
+	while (1)
+	{
+		gettimeofday(&current_time2, NULL);
+		if (current_time2.tv_sec >= s && current_time2.tv_usec >= ms)
+			break;
+	}
+}
 
 long	ft_atoi(const char *str)
 {
@@ -28,94 +43,45 @@ long	ft_atoi(const char *str)
 	return (result * sign);
 }
 
-pthread_mutex_t lock;
-
-void	phil_taken_fork(t_vars *vars)
+void	*philosopher(void *arg)
 {
-		printf("The philosopher %d has taken a fork\n", vars->n_o_philo);
-		vars->fork = 1;
-		if (vars->n_o_philo + 2 == vars->numer_of_philos)
-			vars[1].fork = 1;
-		else if (vars->n_o_philo + 2 > vars->numer_of_philos)
-			vars[0].fork = 1;
-		else
-			vars[vars->n_o_philo + 2].fork = 1;
-}
-
-void    phil_eating(t_vars *vars)
-{
-	pthread_mutex_lock(&lock);
-	phil_taken_fork(vars);
-	printf("The philosopher %d is eating\n", vars->n_o_philo);
-	eating = 1;
-	sleep(vars->time_2_eat);
-	pthread_mutex_unlock(&lock);
-}
-
-void	phil_taken_thinking(t_vars *vars)
-{
-	pthread_mutex_lock(&lock);
-	printf("The philosopher %d is thinking\n", vars->n_o_philo);
-	eating = 0;
-	pthread_mutex_unlock(&lock);
-}
-
-void	phil_taken_died(t_vars *vars)
-{
-
-}
-
-void    *phil_sleeping(t_vars *vars)
-{ 
-	printf("Philosopher %d start sleeping\n", vars->n_o_philo % 5);
-	sleep(vars->time_2_sleep);
-	printf("Philosopher %d finish sleeping\n", vars->n_o_philo % 5);
-	return (0);
-}
-
-void    *philosophers(void *args)
-{
-	phil_eating((t_vars *)args);
-	phil_taken_thinking((t_vars *)args);
-	pthread_exit(args);
-	return (0);
-}
-
-void    init_struct(t_vars *vars, char **av)
-{
-	int i = 0;
-	int n = ft_atoi(av[1]);
-	while (++i <= n)
-	{
-		vars->numer_of_philos = n;
-		vars->n_o_philo = i;
-		vars->time_2_die = ft_atoi(av[2]);
-		vars->time_2_eat = ft_atoi(av[3]);
-		vars->time_2_sleep = ft_atoi(av[4]);
-		vars->notepme = ft_atoi(av[5]);
-		vars->fork = 1;
-		vars++;
-	}
+	t_vars *vars = (t_vars *)arg;
+	pthread_mutex_lock(&vars->forks[vars->id]);
+	pthread_mutex_lock(&vars->forks[(vars->id + 1) % 5]);
+	printf("philo = %d\n", vars->philosophers[vars->id]);
+	// my_usleep(vars->time_2_eat);
+	pthread_mutex_unlock(&vars->forks[(vars->id + 1) % 5]);
+	pthread_mutex_unlock(&vars->forks[vars->id]);
+	return 0;
 }
 
 int main(int ac, char **av)
 {
-	if (ac != 6)
-		return (0);
-	int n = ft_atoi(av[1]) + 1;
-	t_vars  *vars = malloc(n * sizeof *vars);
-	pthread_mutex_init(&lock, NULL);
-	init_struct(vars, av);
-	pthread_t *thread_id = malloc(n * sizeof *thread_id);
-	int i = 0;
-	int j = 0;
-	while (++i < n)
+	if (5 != ac)
+		return 0;
+
+	t_vars vars;
+	vars.number_of_philos = ft_atoi(av[1]);
+	vars.time_2_eat = ft_atoi(av[2]);
+	vars.time_2_die = ft_atoi(av[3]);
+	vars.time_2_sleep = ft_atoi(av[4]);
+	vars.philosophers = malloc((vars.number_of_philos + 1) * sizeof(int));
+	vars.philosophers[vars.number_of_philos + 1] = 0;
+	vars.forks = malloc((vars.number_of_philos + 1) * sizeof(pthread_mutex_t));
+	int i = -1;
+	while (++i < vars.number_of_philos)
+		vars.philosophers[i] = i + 1;
+	i = -1;
+	while (++i <= vars.number_of_philos)
+		pthread_mutex_init(&vars.forks[i], NULL);
+	pthread_t *threads = malloc((vars.number_of_philos + 1) * sizeof(pthread_t));
+	threads[vars.number_of_philos + 1] = 0;
+	i = -1;
+	while (++i < vars.number_of_philos)
 	{
-		if (i + 2 >= n)
-			i = i % 2;
-		pthread_create(&thread_id[i], NULL, philosophers, (void *)&vars[i + 2]);
-		pthread_join(thread_id[i], (void *)&vars);
+		vars.id = i;
+		pthread_create(&threads[i], NULL, philosopher, &vars);
 	}
-	while (++i < n)
+
 	return (0);
 }

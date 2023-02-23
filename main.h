@@ -5,16 +5,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sys/time.h>
 
 typedef struct  s_vars
 {
-    int numer_of_philos;
-    int n_o_philo;
+    int id;
+    int number_of_philos;
+    int *philosophers;
     int time_2_die;
     int time_2_eat;
     int time_2_sleep;
     int notepme;
-    int fork;
+	pthread_mutex_t *forks;
 }   t_vars;
 
 #endif
