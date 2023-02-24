@@ -16,6 +16,8 @@ typedef struct  s_vars
     int time_2_sleep;
     int notepme;
 	pthread_mutex_t forks;
+    struct timeval start_time;
+    struct timeval end_time;
 }   t_vars;
 
 #endif
