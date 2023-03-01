@@ -27,16 +27,23 @@ long	ft_atoi(const char *str)
 	return (result * sign);
 }
 
+long	get_current_time(t_vars *vars)
+{
+	long	time;
+	gettimeofday(&vars->end_time, NULL);
+	time = (vars->end_time.tv_sec - vars->start_time.tv_sec) * 1000;
+	time += (vars->end_time.tv_usec - vars->start_time.tv_usec) / 1000;
+	return (time);
+}
+
 void	sleeping(t_vars *vars)
 {
-	gettimeofday(&vars->end_time, NULL);
-	printf("%ld %d is sleeping\n", ((vars->end_time.tv_sec - vars->start_time.tv_sec) * 1000) + ((vars->end_time.tv_usec - vars->start_time.tv_usec) / 1000), vars->philosopher);
+	printf("%ld %d is sleeping\n", get_current_time(vars), vars->philosopher);
 	usleep(vars->time_2_sleep * 1000);
 }
 
 void	eating(t_vars *vars)
 {
-
 	if (vars->philosopher >= vars->number_of_philos)
 	{
 		pthread_mutex_lock(&vars->fork);
@@ -47,10 +54,8 @@ void	eating(t_vars *vars)
 		pthread_mutex_lock(&vars->fork);
 		pthread_mutex_lock(&(vars + 1)->fork);
 	}
-	gettimeofday(&vars->end_time, NULL);
-	printf("%ld %d has taken a fork\n", ((vars->end_time.tv_sec - vars->start_time.tv_sec) * 1000) + ((vars->end_time.tv_usec - vars->start_time.tv_usec) / 1000), vars->philosopher);
-	gettimeofday(&vars->end_time, NULL);
-	printf("%ld %d is eating\n", ((vars->end_time.tv_sec - vars->start_time.tv_sec) * 1000) + ((vars->end_time.tv_usec - vars->start_time.tv_usec) / 1000), vars->philosopher);
+	printf("%ld %d has taken a fork\n", get_current_time(vars), vars->philosopher);
+	printf("%ld %d is eating\n", get_current_time(vars), vars->philosopher);
 	usleep(vars->time_2_eat * 1000);
 	vars->eater[0] += 1;
 	if (vars->philosopher >= vars->number_of_philos)
@@ -68,17 +73,15 @@ void	eating(t_vars *vars)
 void	*philosopher(void *arg)
 {
 	t_vars *vars = (t_vars *)arg;
-	int sum = vars->notepme * vars->number_of_philos;
-	while (1)
+	int i = 0;
+	while (!vars->notepme || i < vars->notepme)
 	{
-		gettimeofday(&vars->end_time, NULL);
-		printf("%ld %d is thinking\n", ((vars->end_time.tv_sec - vars->start_time.tv_sec) * 1000) + ((vars->end_time.tv_usec - vars->start_time.tv_usec) / 1000), vars->philosopher);
+		
+		printf("%ld %d is thinking\n", get_current_time(vars), vars->philosopher);
 		eating(vars);
 		sleeping(vars);
-		// if (vars->eater[0] >= sum)
-		// 	break ;
-		gettimeofday(&vars->end_time, NULL);
-		printf("%ld %d is thinking\n", ((vars->end_time.tv_sec - vars->start_time.tv_sec) * 1000) + ((vars->end_time.tv_usec - vars->start_time.tv_usec) / 1000), vars->philosopher);
+		printf("%ld %d is thinking\n", get_current_time(vars), vars->philosopher);
+		i++;
 	}
 	return 0;
 }
@@ -88,8 +91,8 @@ int main(int ac, char **av)
 	if (ac != 5 && ac != 6)
 		return (0);
 	int n = ft_atoi(av[1]);
-	int eat = ft_atoi(av[2]);
-	int die = ft_atoi(av[3]);
+	int eat = ft_atoi(av[3]);
+	int die = ft_atoi(av[2]);
 	int sleep = ft_atoi(av[4]);
 	int notepme = ft_atoi(av[5]);
 	t_vars *vars = malloc((n + 1) * sizeof(t_vars));
