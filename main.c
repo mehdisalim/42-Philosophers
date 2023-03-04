@@ -27,22 +27,17 @@ long	ft_atoi(const char *str)
 	return (result * sign);
 }
 
-long	get_current_time(t_vars *vars)
+long	get_current_time(struct timeval start_time)
 {
 	long	time;
-	gettimeofday(&vars->end_time, NULL);
-	time = (vars->end_time.tv_sec - vars->start_time.tv_sec) * 1000;
-	time += (vars->end_time.tv_usec - vars->start_time.tv_usec) / 1000;
+	struct timeval end_time;
+	gettimeofday(&end_time, NULL);
+	time = (end_time.tv_sec - start_time.tv_sec) * 1000;
+	time += (end_time.tv_usec - start_time.tv_usec) / 1000;
 	return (time);
 }
 
-void	sleeping(t_vars *vars)
-{
-	printf("%ld %d is sleeping\n", get_current_time(vars), vars->philosopher);
-	usleep(vars->time_2_sleep * 1000);
-}
-
-void	eating(t_vars *vars)
+int	eating(t_vars *vars)
 {
 	if (vars->philosopher >= vars->number_of_philos)
 	{
@@ -54,10 +49,15 @@ void	eating(t_vars *vars)
 		pthread_mutex_lock(&vars->fork);
 		pthread_mutex_lock(&(vars + 1)->fork);
 	}
-	printf("%ld %d has taken a fork\n", get_current_time(vars), vars->philosopher);
-	printf("%ld %d is eating\n", get_current_time(vars), vars->philosopher);
+	if (get_current_time(vars->update_time_2_die) > vars->time_2_die)
+	{
+		vars->is_died[0] = 1;
+		// return (0);
+	}
+	printf("%ld %d has taken a fork\n", get_current_time(vars->start_time), vars->philosopher);
+	printf("%ld %d is eating\n", get_current_time(vars->start_time), vars->philosopher);
 	usleep(vars->time_2_eat * 1000);
-	vars->eater[0] += 1;
+	vars->eater++;
 	if (vars->philosopher >= vars->number_of_philos)
 	{
 		pthread_mutex_unlock(&vars->fork);
@@ -68,6 +68,20 @@ void	eating(t_vars *vars)
 		pthread_mutex_unlock(&vars->fork);
 		pthread_mutex_unlock(&(vars + 1)->fork);
 	}
+	return (1);
+}
+
+int checker(t_vars *vars)
+{
+	t_vars *var = vars - vars->philosopher + 1;
+	int i = 0;
+	while (var[i].philosopher)
+	{
+		if (var[i].eater < var[i].notepme || var[i].is_died[0])
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 void	*philosopher(void *arg)
@@ -76,11 +90,48 @@ void	*philosopher(void *arg)
 	int i = 0;
 	while (!vars->notepme || i < vars->notepme)
 	{
-		
-		printf("%ld %d is thinking\n", get_current_time(vars), vars->philosopher);
-		eating(vars);
-		sleeping(vars);
-		printf("%ld %d is thinking\n", get_current_time(vars), vars->philosopher);
+		gettimeofday(&vars->update_time_2_die, NULL);
+		if (checker(vars) || vars->is_died[0])
+		{
+			if (vars->is_died[0])
+				printf("%ld %d died\n", get_current_time(vars->start_time), vars->philosopher);
+			return (0);
+		}
+		printf("%ld %d is thinking\n", get_current_time(vars->start_time), vars->philosopher);
+		if (checker(vars) || vars->is_died[0])
+		{
+			if (vars->is_died[0])
+				printf("%ld %d died\n", get_current_time(vars->start_time), vars->philosopher);
+			return (0);
+		}
+		// eating(vars);
+		if (!eating(vars) || checker(vars) || vars->is_died[0])
+		{
+			if (vars->is_died[0])
+				printf("%ld %d died\n", get_current_time(vars->start_time), vars->philosopher);
+			return (0);
+		}
+		printf("%ld %d is sleeping\n", get_current_time(vars->start_time), vars->philosopher);
+		if (checker(vars) || vars->is_died[0])
+		{
+			if (vars->is_died[0])
+				printf("%ld %d died\n", get_current_time(vars->start_time), vars->philosopher);
+			return (0);
+		}
+		usleep(vars->time_2_sleep * 1000);
+		if (checker(vars) || vars->is_died[0])
+		{
+			if (vars->is_died[0])
+				printf("%ld %d died\n", get_current_time(vars->start_time), vars->philosopher);
+			return (0);
+		}
+		printf("%ld %d is thinking\n", get_current_time(vars->start_time), vars->philosopher);
+		if (checker(vars) || vars->is_died[0])
+		{
+			if (vars->is_died[0])
+				printf("%ld %d died\n", get_current_time(vars->start_time), vars->philosopher);
+			return (0);
+		}
 		i++;
 	}
 	return 0;
@@ -91,12 +142,12 @@ int main(int ac, char **av)
 	if (ac != 5 && ac != 6)
 		return (0);
 	int n = ft_atoi(av[1]);
-	int eat = ft_atoi(av[3]);
 	int die = ft_atoi(av[2]);
+	int eat = ft_atoi(av[3]);
 	int sleep = ft_atoi(av[4]);
 	int notepme = ft_atoi(av[5]);
 	t_vars *vars = malloc((n + 1) * sizeof(t_vars));
-	int eat_index = 0;
+	int died = 0;
 	int i = -1;
 	while (++i < n)
 	{
@@ -104,7 +155,8 @@ int main(int ac, char **av)
 		vars[i].time_2_eat = eat;
 		vars[i].time_2_die = die;
 		vars[i].time_2_sleep = sleep;
-		vars[i].eater = &eat_index;
+		vars[i].eater = 0;
+		vars[i].is_died = &died;
 		vars[i].notepme = notepme;
 		vars[i].philosopher = i + 1;
 		pthread_mutex_init(&vars[i].fork, NULL);

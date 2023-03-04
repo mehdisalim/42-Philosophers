@@ -14,11 +14,13 @@ typedef struct  s_vars
     int time_2_die;
     int time_2_eat;
     int time_2_sleep;
+    int *is_died;
     int notepme;
-    int *eater;
+    int eater;
 	pthread_mutex_t fork;
     struct timeval start_time;
-    struct timeval end_time;
+    struct timeval update_time_2_die;
 }   t_vars;
 
 #endif
+
