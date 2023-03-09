@@ -1,5 +1,8 @@
 #include "main.h"
 
+
+        char *str = "hello" "worlf";
+		
 void	my_usleep(size_t n)
 {
 	struct timeval current_time2;
