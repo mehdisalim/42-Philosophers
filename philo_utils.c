@@ -24,10 +24,13 @@ int mutex(t_vars *vars, int (*func)(pthread_mutex_t*)) {
 int checker(t_vars *vars) {
 	t_vars *var = vars - vars->philosopher + 1;
 	int i = 0;
+	int max = (var->notepme * var->number_of_philos) + (vars->number_of_philos / 4);
 	int len = vars->number_of_philos;
+	if (vars->notepme == 0)
+		return (1);
 	while (i < len)
 	{
-		if (var[i].eater <= var[i].notepme)
+		if (var[i].eater[0] >= max)
 			return (0);
 		i++;
 	}

@@ -30,22 +30,26 @@ void	init(int ac, char **av, t_vars **var)
 	int notepme = 0;
 	if (ac == 6)
 		notepme = ft_atoi(av[5]);
-	int died = 0;
+	static int died = 0;
 	int i = -1;
 	pthread_mutex_t efork;
+	static pthread_mutex_t mutex_eat;
+	static int e = 0;
 	pthread_mutex_init(&efork, NULL);
+	pthread_mutex_init(&mutex_eat, NULL);
 	while (++i < n)
 	{
 		vars[i].number_of_philos = n;
 		vars[i].time_2_eat = eat;
 		vars[i].time_2_die = die;
 		vars[i].time_2_sleep = sleep;
-		vars[i].eater = 0;
+		vars[i].eater = &e;
 		vars[i].exit = 0;
 		vars[i].is_died = &died;
 		vars[i].notepme = notepme;
 		vars[i].philosopher = i + 1;
 		vars[i].exit_fork = &efork;
+		vars[i].mutex_eat = &mutex_eat;
 		pthread_mutex_init(&vars[i].fork, NULL);
 	}
 }
@@ -64,7 +68,7 @@ int main(int ac, char **av) {
 		if (gettimeofday(&vars[i].start_time, NULL) != 0)
 			return (0);
 		pthread_create(&threads[i], NULL, philosopher, &vars[i]);
-		usleep(5);
+		usleep(4);
 	}
 	i = -1;
 	while(++i < n)

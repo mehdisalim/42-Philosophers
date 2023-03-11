@@ -17,7 +17,8 @@ typedef struct  s_vars
     int *is_died;
     int exit;
     int notepme;
-    int eater;
+    int *eater;
+	pthread_mutex_t *mutex_eat;
 	pthread_mutex_t fork;
 	pthread_mutex_t *exit_fork;
     struct timeval start_time;
