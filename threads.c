@@ -1,52 +1,50 @@
 #include "main.h"
 
+int	eating(t_vars *vars) {
+	mutex(vars, pthread_mutex_lock);
+	if (!checker(vars))
+			return (0);
+	print("has taken a fork", vars);
+	if (!checker(vars))
+			return (0);
+	print("is eating", vars);
+	usleep(vars->time_2_eat * 1000);
+	gettimeofday(&vars->update_time_2_die, NULL);
+	mutex(vars, pthread_mutex_unlock);
+	return 0;
+}
+
 void	*philosopher(void *arg) {
 	t_vars *vars = (t_vars *)arg;
 	int i = 0;
 	gettimeofday(&vars->update_time_2_die, NULL);
+	print("is thinking", vars);
 	while (!vars->notepme || i < vars->notepme)
 	{
-		if (checker(vars) || vars->is_died[0])
-		{
-			if (vars->is_died[0])
-			{
-				if (pthread_mutex_lock(&vars->exit_fork[0]) == -1)
-					return (0);
-				print("died", vars);
-			}
-			return (0);
-		}
-		print("is thinking", vars);
 		eating(vars);
-		if (get_current_time(vars->update_time_2_die) > vars->time_2_die)
-			vars->is_died[0] = 1;
-		if (checker(vars) || vars->is_died[0])
-		{
-			if (vars->is_died[0])
-			{
-				print("died", vars);
-				if (pthread_mutex_lock(&vars->exit_fork[0]) == -1)
-					return (0);
-			}
+		if (!checker(vars))
 			return (0);
-		}
-		print("is sleeping", vars);	
-		if (get_current_time(vars->update_time_2_die) > vars->time_2_die)
+		print("is sleeping", vars);
+		if (!checker(vars))
 			return (0);
 		usleep(vars->time_2_sleep * 1000);
-		if (checker(vars) || vars->is_died[0])
-		{
-			if (vars->is_died[0])
-			{
-				print("died", vars);
-				if (pthread_mutex_lock(&vars->exit_fork[0]) == -1)
-					return (0);
-			}
+		if (!checker(vars))
 			return (0);
-		}
 		print("is thinking", vars);
 		i++;
-		usleep(1);
 	}
 	return 0;
 }
+
+
+// ==================================================================================================================================
+
+// void	life_cycle()
+// {
+
+// }
+
+// void	pt_oncreate(pthread_t *thread, void *data)
+// {
+// 	pthread_create(thread, NULL, life_cycle, data);
+// }

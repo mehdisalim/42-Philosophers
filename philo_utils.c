@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 int	print(char *str, t_vars *vars){
 	if (pthread_mutex_lock(&vars->exit_fork[0]) == -1)
 		return -1;
@@ -25,9 +24,10 @@ int mutex(t_vars *vars, int (*func)(pthread_mutex_t*)) {
 int checker(t_vars *vars) {
 	t_vars *var = vars - vars->philosopher + 1;
 	int i = 0;
-	while (var[i].philosopher)
+	int len = vars->number_of_philos;
+	while (i < len)
 	{
-		if (var[i].eater < var[i].notepme || var[i].is_died[0])
+		if (var[i].eater <= var[i].notepme)
 			return (0);
 		i++;
 	}
