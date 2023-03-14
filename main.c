@@ -37,8 +37,7 @@ void	init(int ac, char **av, t_vars **var)
 	static int e = 0;
 	pthread_mutex_init(&efork, NULL);
 	pthread_mutex_init(&mutex_eat, NULL);
-	while (++i < n)
-	{
+	while (++i < n) {
 		vars[i].number_of_philos = n;
 		vars[i].time_2_eat = eat;
 		vars[i].time_2_die = die;
@@ -68,7 +67,7 @@ int main(int ac, char **av) {
 		if (gettimeofday(&vars[i].start_time, NULL) != 0)
 			return (0);
 		pthread_create(&threads[i], NULL, philosopher, &vars[i]);
-		usleep(4);
+		usleep(5);
 	}
 	i = -1;
 	while(++i < n)

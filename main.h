@@ -7,6 +7,9 @@
 #include <pthread.h>
 #include <sys/time.h>
 
+#define EXIT 0
+#define CONTINUE 1
+
 typedef struct  s_vars
 {
     int number_of_philos;
@@ -32,6 +35,8 @@ int     mutex(t_vars *vars, int (*func)(pthread_mutex_t*));
 int     checker(t_vars *vars);
 long	ft_atoi(const char *str);
 int	eating(t_vars *vars);
+int thinking(t_vars *vars);
+int sleeping(t_vars *vars);
 
 #endif
 
