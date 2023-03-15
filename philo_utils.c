@@ -10,6 +10,16 @@ int	print(char *str, t_vars *vars){
 }
 
 int mutex(t_vars *vars, int (*func)(pthread_mutex_t*)) {
+	if (func(&vars->fork) )
+		return (-1);
+	if (vars->philosopher == vars->number_of_philos && func(&(vars - vars->philosopher + 1)->fork))
+		return (-1);
+	else if (func(&(vars + 1)->fork))
+		return (-1);
+	return (0);
+}
+
+int mutex_destroy(t_vars *vars, int (*func)(pthread_mutex_t*)) {
 	if (func(&vars->fork))
 		return (-1);
 	if (vars->philosopher >= vars->number_of_philos && func(&(vars - vars->philosopher + 1)->fork))
@@ -19,7 +29,6 @@ int mutex(t_vars *vars, int (*func)(pthread_mutex_t*)) {
 	else
 		return (0);
 }
-
 
 int checker(t_vars *vars) {
 	t_vars *var = vars - vars->philosopher + 1;

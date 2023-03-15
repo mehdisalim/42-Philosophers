@@ -21,6 +21,8 @@ typedef struct  s_vars
     int exit;
     int notepme;
     int *eater;
+    int *locker;
+	pthread_mutex_t *mutex_lock;
 	pthread_mutex_t *mutex_eat;
 	pthread_mutex_t fork;
 	pthread_mutex_t *exit_fork;
@@ -29,14 +31,16 @@ typedef struct  s_vars
 }   t_vars;
 
 void	*philosopher(void *arg);
+void	*unlocker(void *args);
 long	get_current_time(struct timeval start_time);
 int	    print(char *str, t_vars *vars);
 int     mutex(t_vars *vars, int (*func)(pthread_mutex_t*));
+int     mutex_destroy(t_vars *vars, int (*func)(pthread_mutex_t*));
 int     checker(t_vars *vars);
 long	ft_atoi(const char *str);
-int	eating(t_vars *vars);
-int thinking(t_vars *vars);
-int sleeping(t_vars *vars);
+int     eating(t_vars *vars);
+int     thinking(t_vars *vars);
+int     sleeping(t_vars *vars);
 
 #endif
 

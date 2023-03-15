@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:04:26 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/14 11:36:53 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/15 15:58:57 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,12 @@ int eating(t_vars *vars)
 	if (!checker(vars))
 			return (EXIT);
 	print("has taken a fork", vars);
+	print("has taken a fork", vars);
 	print("is eating", vars);
-	usleep(vars->time_2_eat * 1000);
+	usleep(vars->time_2_eat * 999);
+	pthread_mutex_lock(vars->mutex_eat);
+	vars->eater[0]++;
+	pthread_mutex_unlock(vars->mutex_eat);
 	if (!checker(vars))
         return (EXIT);
 	gettimeofday(&vars->update_time_2_die, NULL);
@@ -44,10 +48,10 @@ int eating(t_vars *vars)
 int sleeping(t_vars *vars)
 {
 	if (!checker(vars))
-        return (EXIT);
-    print("is sleeping", vars);
-    usleep(vars->time_2_sleep * 1000);
+		return (EXIT);
+	print("is sleeping", vars);
+	usleep(vars->time_2_sleep * 1000);
 	if (!checker(vars))
-        return (EXIT);
+		return (EXIT);
 	return (CONTINUE);
 }
