@@ -4,7 +4,7 @@ void	*philosopher(void *arg) {
 	t_vars *vars = (t_vars *)arg;
 	pthread_mutex_lock(vars->mutex_lock);
 	if (vars->philosopher % 2 == 0)
-		usleep(100);
+		usleep(50);
 	gettimeofday(&vars->start_time, NULL);
 	gettimeofday(&vars->update_time_2_die, NULL);
 	int number_of_meals = vars->notepme * vars->number_of_philos;

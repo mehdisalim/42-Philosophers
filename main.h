@@ -36,7 +36,6 @@ long	get_current_time(struct timeval start_time);
 int	    print(char *str, t_vars *vars);
 int     mutex(t_vars *vars, int (*func)(pthread_mutex_t*));
 int     mutex_destroy(t_vars *vars, int (*func)(pthread_mutex_t*));
-int     checker(t_vars *vars);
 long	ft_atoi(const char *str);
 int     eating(t_vars *vars);
 int     thinking(t_vars *vars);
