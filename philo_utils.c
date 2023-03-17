@@ -1,10 +1,32 @@
 #include "main.h"
 
 int	print(char *str, t_vars *vars){
-	if (pthread_mutex_lock(&vars->exit_fork[0]) == -1)
+	if (pthread_mutex_lock(vars->exit_fork) == -1)
 		return -1;
+	if (vars->eater[0] == -1)
+	{
+		pthread_mutex_unlock(vars->exit_fork);
+		return (1);
+	}
 	printf("%ld %d %s\n", get_current_time(vars->start_time), vars->philosopher, str);
-	if (pthread_mutex_unlock(&vars->exit_fork[0]) == -1)
+	if (pthread_mutex_unlock(vars->exit_fork) == -1)
+		return -1;
+	return (0);
+}
+
+int	print_die(t_vars *vars) {
+	if (pthread_mutex_lock(vars->exit_fork) == -1)
+		return -1;
+	if (vars->eater[0] == -1)
+	{
+		pthread_mutex_unlock(vars->exit_fork);
+		return (1);
+	}
+	printf("%ld %d died\n", get_current_time(vars->start_time), vars->philosopher);
+	pthread_mutex_lock(vars->mutex_eat);
+	vars->eater[0] = -1;
+	pthread_mutex_unlock(vars->mutex_eat);
+	if (pthread_mutex_unlock(vars->exit_fork) == -1)
 		return -1;
 	return (0);
 }

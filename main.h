@@ -19,6 +19,7 @@ typedef struct  s_vars
     int time_2_sleep;
     int *is_died;
     int exit;
+    int *died_philo;
     int notepme;
     int *eater;
     int *locker;
@@ -33,6 +34,7 @@ typedef struct  s_vars
 void	*philosopher(void *arg);
 void	*unlocker(void *args);
 long	get_current_time(struct timeval start_time);
+void    my_usleep(long usec);
 int	    print(char *str, t_vars *vars);
 int     mutex(t_vars *vars, int (*func)(pthread_mutex_t*));
 int     mutex_destroy(t_vars *vars, int (*func)(pthread_mutex_t*));
@@ -40,6 +42,8 @@ long	ft_atoi(const char *str);
 int     eating(t_vars *vars);
 int     thinking(t_vars *vars);
 int     sleeping(t_vars *vars);
+
+int	print_die(t_vars *vars);
 
 #endif
 

@@ -9,3 +9,20 @@ long	get_current_time(struct timeval start_time){
 	time += (end_time.tv_usec - start_time.tv_usec) / 1000;
 	return (time);
 }
+
+void my_usleep(long usec) {
+    struct timeval begin;
+    gettimeofday(&begin, NULL);
+    long start = begin.tv_sec * 1000000 + begin.tv_usec;
+    long end = start + usec;
+	long now;
+    while (1) {
+        // if (get_current_time(vars->update_time_2_die) >= vars->time_2_die)
+        //     return ;
+        gettimeofday(&begin, NULL);
+        now = begin.tv_sec * 1000000 + begin.tv_usec;
+        if (now >= end)
+            break;
+        usleep(50);
+    }
+}
