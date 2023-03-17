@@ -17,12 +17,10 @@ void my_usleep(long usec) {
     long end = start + usec;
 	long now;
     while (1) {
-        // if (get_current_time(vars->update_time_2_die) >= vars->time_2_die)
-        //     return ;
         gettimeofday(&begin, NULL);
         now = begin.tv_sec * 1000000 + begin.tv_usec;
         if (now >= end)
             break;
-        usleep(50);
+        usleep(100);
     }
 }

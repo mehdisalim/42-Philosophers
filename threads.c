@@ -3,10 +3,9 @@
 void	*philosopher(void *arg) {
 	t_vars *vars = (t_vars *)arg;
 	pthread_mutex_lock(vars->mutex_lock);
-	// if (vars->philosopher % 2 == 0)
-	// 	my_usleep(10);
-	gettimeofday(&vars->start_time, NULL);
 	gettimeofday(&vars->update_time_2_die, NULL);
+	if (vars->philosopher % 2 == 0)
+		my_usleep(100);
 	int number_of_meals = vars->notepme * vars->number_of_philos;
 	thinking(vars);
 	while (eating(vars) && sleeping(vars) && (!number_of_meals || vars->eater[0] <= number_of_meals) && thinking(vars));

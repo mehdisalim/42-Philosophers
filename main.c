@@ -44,16 +44,17 @@ int main(int ac, char **av) {
 	t_vars *vars = malloc((n + 1) * sizeof(t_vars));
 	init(ac, av, &vars);
 	pthread_t *threads = malloc((n + 1) * sizeof(pthread_t));
-	// pthread_t secoud_thread;
+	pthread_t secoud_thread;
 	int i;
 	i = -1;
 	pthread_mutex_lock(vars->mutex_lock);
 	while (++i < n)
 	{
+		gettimeofday(&vars[i].start_time, NULL);
 		pthread_create(&threads[i], NULL, philosopher, &vars[i]);
-		my_usleep(50);
+		// my_usleep(10);
 	}
-	// pthread_create(&secoud_thread, NULL, unlocker, &vars[0]);
+	pthread_create(&secoud_thread, NULL, unlocker, &vars[0]);
 	i = -1;
 	while(++i < n)
 		pthread_join(threads[i], NULL);
