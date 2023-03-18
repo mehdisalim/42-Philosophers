@@ -7,7 +7,7 @@ void	init(int ac, char **av, t_vars **var)
 	int die = ft_atoi(av[2]);
 	int eat = ft_atoi(av[3]);
 	int sleep = ft_atoi(av[4]);
-	int notepme = 0;
+	int notepme = INT_MAX;
 	if (ac == 6)
 		notepme = ft_atoi(av[5]);
 	static int died = 0;
