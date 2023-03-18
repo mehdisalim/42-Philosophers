@@ -7,7 +7,7 @@ void	init(int ac, char **av, t_vars **var)
 	int die = ft_atoi(av[2]);
 	int eat = ft_atoi(av[3]);
 	int sleep = ft_atoi(av[4]);
-	int notepme = 0;
+	int notepme = INT_MAX;
 	if (ac == 6)
 		notepme = ft_atoi(av[5]);
 	static int died = 0;
@@ -44,20 +44,23 @@ int main(int ac, char **av) {
 	t_vars *vars = malloc((n + 1) * sizeof(t_vars));
 	init(ac, av, &vars);
 	pthread_t *threads = malloc((n + 1) * sizeof(pthread_t));
-	// pthread_t secoud_thread;
 	int i;
 	i = -1;
-	// pthread_mutex_lock(vars->mutex_lock);
+    struct timeval start_time;
+	gettimeofday(&start_time, NULL);
 	while (++i < n)
 	{
-		gettimeofday(&vars[i].start_time, NULL);
+		vars[i].start_time = &start_time;
 		pthread_create(&threads[i], NULL, philosopher, &vars[i]);
-		my_usleep(100);
+		if (vars[i].philosopher % 2 != 0)
+			my_usleep(50);
 	}
-	// pthread_create(&secoud_thread, NULL, unlocker, &vars[0]);
 	i = -1;
-	// while(++i < n)
-	// 	pthread_join(threads[i], NULL);
-	while (vars->eater[0] != -1);
+	while(++i < n)
+	{
+		pthread_join(threads[i], NULL);
+		if (vars->eater[0] == -1)
+			break ;
+	}
 	return (0);
 }

@@ -2,6 +2,7 @@
 # define MAIN_H
 
 #include <stdio.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -27,7 +28,7 @@ typedef struct  s_vars
 	pthread_mutex_t *mutex_eat;
 	pthread_mutex_t fork;
 	pthread_mutex_t *exit_fork;
-    struct timeval start_time;
+    struct timeval *start_time;
     struct timeval update_time_2_die;
 }   t_vars;
 
