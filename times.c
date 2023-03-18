@@ -21,6 +21,6 @@ void my_usleep(long usec) {
         now = begin.tv_sec * 1000000 + begin.tv_usec;
         if (now >= end)
             break;
-        usleep(100);
+        usleep(50);
     }
 }
