@@ -28,13 +28,17 @@ int	print_die(t_vars *vars) {
 	return (0);
 }
 
-int mutex(t_vars *vars, int (*func)(pthread_mutex_t*)) {
+int mutex(t_vars *vars, int (*func)(pthread_mutex_t*), int show) {
 	if (func(&vars->fork) )
 		return (-1);
+	if (show)
+		print("has taken a fork", vars);
 	if (vars->philosopher == vars->number_of_philos && func(&(vars - vars->philosopher + 1)->fork))
 		return (-1);
 	else if (func(&(vars + 1)->fork))
 		return (-1);
+	if (show)
+		print("has taken a fork", vars);
 	return (0);
 }
 

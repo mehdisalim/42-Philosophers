@@ -7,9 +7,9 @@ void	init(int ac, char **av, t_vars **var)
 	int die = ft_atoi(av[2]);
 	int eat = ft_atoi(av[3]);
 	int sleep = ft_atoi(av[4]);
-	int notepme = INT_MAX;
+	int notepme = 0;
 	if (ac == 6)
-		notepme = ft_atoi(av[5]);
+		notepme = ft_atoi(av[5]) * n;
 	static int died = 0;
 	static int locker = 0;
 	int i = -1;
@@ -37,7 +37,15 @@ void	init(int ac, char **av, t_vars **var)
 	}
 }
 
-int main(int ac, char **av) {
+/**
+ * @brief 
+ * 
+ * @param ac number of args
+ * @param av value of args
+ * @return int 
+ */
+int main(int ac, char **av)
+{
 	if ((ac != 5 && ac != 6) || check_args(ac, av) == -1)
 	{
 		write(2, "Invalid Argemments !!\n", 22);
