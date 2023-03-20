@@ -2,9 +2,8 @@
 
 void	*philosopher(void *arg) {
 	t_data *data = (t_data *)arg;
-	if (gettimeofday(&data->update_time_2_die, NULL) == ERROR)
+	if (gettimeofday(&data->update_time_2_die, NULL) == ERROR || thinking(data) == FAILED)
 		return (0);
-	thinking(data);
 	while (eating(data) \
 			&& sleeping(data) \
 			&& (!data->args[N_O_T_E_P_M_E] \
@@ -13,5 +12,5 @@ void	*philosopher(void *arg) {
 	mutex(data, pthread_mutex_unlock, 0);
 	pthread_mutex_unlock(data->mutex_eat);
 	pthread_mutex_unlock(data->exit_fork);
-	return (SUCCEEDED);
+	return (0);
 }

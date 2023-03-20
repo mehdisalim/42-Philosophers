@@ -31,7 +31,7 @@ int	print_die(t_data *data) {
 }
 
 int mutex(t_data *data, int (*func)(pthread_mutex_t*), int show) {
-	if (func(&data->fork) )
+	if (func(&data->fork))
 		return ERROR;
 	if (show)
 		print("has taken a fork", data);
@@ -49,6 +49,6 @@ int checker(t_data *data)
 	if (get_current_time(data->update_time_2_die) >= data->args[TIME_2_DIE])
 		print_die(data);
 	if (data->args[N_O_T_E_P_M_E] && (data->eater[0] >= data->args[N_O_T_E_P_M_E] || data->eater[0] < 0))
-		return (ERROR);
+		return (FAILED);
 	return (SUCCEEDED);
 }
