@@ -1,8 +1,8 @@
 #include "main.h"
 
-void	init(int ac, char **av, t_vars **var)
+int	init(int ac, char **av, t_data **var)
 {
-	t_vars *vars = *var;
+	t_data *data = *var;
 	int n = ft_atoi(av[1]);
 	int die = ft_atoi(av[2]);
 	int eat = ft_atoi(av[3]);
@@ -10,31 +10,25 @@ void	init(int ac, char **av, t_vars **var)
 	int notepme = 0;
 	if (ac == 6)
 		notepme = ft_atoi(av[5]) * n;
-	static int died = 0;
-	static int locker = 0;
+	static int e = 0;
 	int i = -1;
 	static pthread_mutex_t efork;
 	static pthread_mutex_t mutex_eat;
-	static pthread_mutex_t mutex_lock;
-	static int e = 0;
 	pthread_mutex_init(&efork, NULL);
 	pthread_mutex_init(&mutex_eat, NULL);
 	while (++i < n) {
-		vars[i].number_of_philos = n;
-		vars[i].time_2_eat = eat;
-		vars[i].time_2_die = die;
-		vars[i].time_2_sleep = sleep;
-		vars[i].eater = &e;
-		vars[i].exit = 0;
-		vars[i].locker = &locker;
-		vars[i].is_died = &died;
-		vars[i].notepme = notepme;
-		vars[i].philosopher = i + 1;
-		vars[i].exit_fork = &efork;
-		vars[i].mutex_eat = &mutex_eat;
-		vars[i].mutex_lock = &mutex_lock;
-		pthread_mutex_init(&vars[i].fork, NULL);
+		data[i].args[ID] = i + 1;
+		data[i].args[N_PHILOS] = n;
+		data[i].args[TIME_2_EAT] = eat;
+		data[i].args[TIME_2_DIE] = die;
+		data[i].args[TIME_2_SLEEP] = sleep;
+		data[i].args[N_O_T_E_P_M_E] = notepme;
+		data[i].eater = &e;
+		data[i].exit_fork = &efork;
+		data[i].mutex_eat = &mutex_eat;
+		pthread_mutex_init(&data[i].fork, NULL);
 	}
+	return (SUCCEEDED);
 }
 
 /**
@@ -52,8 +46,10 @@ int main(int ac, char **av)
 		return (1);
 	}
 	int n = ft_atoi(av[1]);
-	t_vars *vars = malloc((n + 1) * sizeof(t_vars));
-	init(ac, av, &vars);
+	t_data *data = malloc((n + 1) * sizeof(t_data));
+	if (!data)
+		return (1);
+	init(ac, av, &data);
 	pthread_t *threads = malloc((n + 1) * sizeof(pthread_t));
 	int i;
 	i = -1;
@@ -61,16 +57,16 @@ int main(int ac, char **av)
 	gettimeofday(&start_time, NULL);
 	while (++i < n)
 	{
-		vars[i].start_time = &start_time;
-		pthread_create(&threads[i], NULL, philosopher, &vars[i]);
-		if (vars[i].philosopher % 2 != 0)
-			my_usleep(50);
+		data[i].start_time = &start_time;
+		pthread_create(&threads[i], NULL, philosopher, &data[i]);
+		if (data[i].args[ID] % 2 != 0)
+			my_usleep(10);
 	}
 	i = -1;
 	while(++i < n)
 	{
 		pthread_join(threads[i], NULL);
-		if (vars->eater[0] == -1)
+		if (data->eater[0] == -1)
 			break ;
 	}
 	return (0);

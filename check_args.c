@@ -20,9 +20,9 @@ int	ft_atoi(const char *str)
 	int	sign;
 
 	if (!str || !*str)
-		return (-1);
+		return ERROR;
 	if (ft_strlen(str) > 10)
-		return (-1);
+		return ERROR;
 	i = 0;
 	result = 0;
 	sign = 1;
@@ -36,7 +36,7 @@ int	ft_atoi(const char *str)
 	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
 		i++;
 	if (str[i])
-		return (-1);
+		return ERROR;
 	return (result * sign);
 }
 
@@ -45,6 +45,6 @@ int	check_args(int ac, char **av)
 	int i = 0;
 	while (++i < ac)
 		if (ft_atoi(av[i]) < 0)
-			return (-1);
+			return ERROR;
 	return (0);
 }

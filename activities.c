@@ -6,59 +6,41 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:04:26 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/20 14:20:03 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/20 15:48:16 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-int thinking(t_vars *vars)
+int thinking(t_data *data)
 {
-	if (get_current_time(vars->update_time_2_die) >= vars->time_2_die)
-		print_die(vars);
-	if (vars->notepme && (vars->eater[0] >= vars->notepme || vars->eater[0] < 0))
-		return (EXIT);
-    print("is thinking", vars);
-    return (CONTINUE);
+	CHECKER(data);
+    print("is thinking", data);
+    return (SUCCEEDED);
 }
 
-int eating(t_vars *vars)
+int eating(t_data *data)
 {
-	if (get_current_time(vars->update_time_2_die) >= vars->time_2_die)
-		print_die(vars);
-	if (vars->notepme && (vars->eater[0] >= vars->notepme || vars->eater[0] < 0))
-		return (EXIT);
-    mutex(vars, pthread_mutex_lock, 1);
-	if (get_current_time(vars->update_time_2_die) >= vars->time_2_die)
-		print_die(vars);
-	if (vars->notepme && (vars->eater[0] >= vars->notepme || vars->eater[0] < 0))
-		return (EXIT);
-	print("is eating", vars);
-	pthread_mutex_lock(vars->mutex_eat);
-	gettimeofday(&vars->update_time_2_die, NULL);
-	if (vars->eater[0] != -1)
-		vars->eater[0]++;
-	pthread_mutex_unlock(vars->mutex_eat);
-	my_usleep(vars->time_2_eat * 1000);
-	mutex(vars, pthread_mutex_unlock, 0);
-	if (get_current_time(vars->update_time_2_die) >= vars->time_2_die)
-		print_die(vars);
-	if (vars->notepme && (vars->eater[0] >= vars->notepme || vars->eater[0] < 0))
-		return (EXIT);
-	return (CONTINUE);
+	CHECKER(data);
+    mutex(data, pthread_mutex_lock, 1);
+	CHECKER(data);
+	print("is eating", data);
+	pthread_mutex_lock(data->mutex_eat);
+	gettimeofday(&data->update_time_2_die, NULL);
+	if (data->eater[0] != -1)
+		data->eater[0]++;
+	pthread_mutex_unlock(data->mutex_eat);
+	my_usleep(data->args[TIME_2_EAT] * 1000);
+	mutex(data, pthread_mutex_unlock, 0);
+	CHECKER(data);
+	return (SUCCEEDED);
 }
 
-int sleeping(t_vars *vars)
+int sleeping(t_data *data)
 {
-	if (get_current_time(vars->update_time_2_die) >= vars->time_2_die)
-		print_die(vars);
-	if (vars->notepme && (vars->eater[0] >= vars->notepme || vars->eater[0] < 0))
-		return (EXIT);
-	print("is sleeping", vars);
-	my_usleep(vars->time_2_sleep * 1000);
-	if (get_current_time(vars->update_time_2_die) >= vars->time_2_die)
-		print_die(vars);
-	if (vars->notepme && (vars->eater[0] >= vars->notepme || vars->eater[0] < 0))
-		return (EXIT);
-	return (CONTINUE);
+	CHECKER(data);
+	print("is sleeping", data);
+	my_usleep(data->args[TIME_2_SLEEP] * 1000);
+	CHECKER(data);
+	return (SUCCEEDED);
 }

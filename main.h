@@ -8,43 +8,57 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-#define EXIT 0
-#define CONTINUE 1
+#define ERROR       -1
+#define FAILED      0
+#define SUCCEEDED   1
 
-typedef struct  s_vars
+#define CHECKER(data) if (!checker(data)) return (EXIT);
+
+typedef struct timeval t_time;
+
+typedef enum e_args
 {
-    int number_of_philos;
-    int philosopher;
-    int time_2_die;
-    int time_2_eat;
-    int time_2_sleep;
-    int *is_died;
-    int exit;
-    int *died_philo;
-    int notepme;
-    int *eater;
-    int *locker;
-	pthread_mutex_t *mutex_lock;
-	pthread_mutex_t *mutex_eat;
-	pthread_mutex_t fork;
-	pthread_mutex_t *exit_fork;
-    struct timeval *start_time;
-    struct timeval update_time_2_die;
-}   t_vars;
+    N_PHILOS,
+    ID,
+    TIME_2_DIE,
+    TIME_2_EAT,
+    TIME_2_SLEEP,
+    N_O_T_E_P_M_E,
+    ENUM_LENGTH
+} t_args;
 
+typedef struct  s_data
+{
+    int args[ENUM_LENGTH];
+    int *eater;
+	pthread_mutex_t *mutex_eat;
+	pthread_mutex_t *exit_fork;
+	pthread_mutex_t fork;
+    t_time *start_time;
+    t_time update_time_2_die;
+}   t_data;
+
+// threads.c
 void	*philosopher(void *arg);
-void	*unlocker(void *args);
-long	get_current_time(struct timeval start_time);
+
+// times.c
+long	get_current_time(t_time start_time);
 void    my_usleep(long usec);
-int	    print(char *str, t_vars *vars);
-int     mutex(t_vars *vars, int (*func)(pthread_mutex_t*), int show);
-int     mutex_destroy(t_vars *vars, int (*func)(pthread_mutex_t*));
+
+// philo_utils.c
+int     mutex(t_data *data, int (*func)(pthread_mutex_t*), int show);
+int     print_die(t_data *data);
+int     checker(t_data *data);
+int	    print(char *str, t_data *data);
+
+// check_args.c
 int     ft_atoi(const char *str);
-int     eating(t_vars *vars);
-int     thinking(t_vars *vars);
-int     sleeping(t_vars *vars);
 int     check_args(int ac, char **av);
-int     print_die(t_vars *vars);
+
+// activities.c
+int     eating(t_data *data);
+int     thinking(t_data *data);
+int     sleeping(t_data *data);
 
 #endif
 

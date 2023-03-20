@@ -1,55 +1,54 @@
 #include "main.h"
 
-int	print(char *str, t_vars *vars){
-	if (pthread_mutex_lock(vars->exit_fork) == -1)
+int	print(char *str, t_data *data){
+	if (pthread_mutex_lock(data->exit_fork) == -1)
 		return -1;
-	if (vars->eater[0] != -1)
-		printf("%ld %d %s\n", get_current_time((vars->start_time)[0]), vars->philosopher, str);
-	if (pthread_mutex_unlock(vars->exit_fork) == -1)
+	if (data->eater[0] != -1)
+		printf("%ld %d %s\n", get_current_time((data->start_time)[0]), data->args[ID], str);
+	if (pthread_mutex_unlock(data->exit_fork) == -1)
 		return -1;
 	return (0);
 }
 
-int	print_die(t_vars *vars) {
-	if (pthread_mutex_lock(vars->exit_fork) == -1)
+int	print_die(t_data *data) {
+	if (pthread_mutex_lock(data->exit_fork) == -1)
 		return -1;
-	if (vars->eater[0] == -1)
+	if (data->eater[0] == -1)
 	{
-		pthread_mutex_unlock(vars->exit_fork);
-		return (-1);
+		pthread_mutex_unlock(data->exit_fork);
+		return ERROR;
 	}
-	pthread_mutex_lock(vars->mutex_eat);
-	printf("%ld %d died\n", get_current_time((vars->start_time)[0]), vars->philosopher);
-	vars->eater[0] = -1;
-	pthread_mutex_unlock(vars->mutex_eat);
+	if (pthread_mutex_lock(data->mutex_eat) == -1)
+		return ERROR;
+	printf("%ld %d died\n", get_current_time((data->start_time)[0]), data->args[ID]);
+	data->eater[0] = -1;
+	if (pthread_mutex_unlock(data->mutex_eat) == -1)
+		return ERROR;
 	my_usleep(500);
-	if (pthread_mutex_unlock(vars->exit_fork) == -1)
-		return -1;
-	return (0);
+	if (pthread_mutex_unlock(data->exit_fork) == -1)
+		return ERROR;
+	return (SUCCEEDED);
 }
 
-int mutex(t_vars *vars, int (*func)(pthread_mutex_t*), int show) {
-	if (func(&vars->fork) )
-		return (-1);
+int mutex(t_data *data, int (*func)(pthread_mutex_t*), int show) {
+	if (func(&data->fork) )
+		return ERROR;
 	if (show)
-		print("has taken a fork", vars);
-	if (vars->philosopher == vars->number_of_philos && func(&(vars - vars->philosopher + 1)->fork))
-		return (-1);
-	else if (func(&(vars + 1)->fork))
-		return (-1);
+		print("has taken a fork", data);
+	if (data->args[ID] == data->args[N_PHILOS] && func(&(data - data->args[ID] + 1)->fork))
+		return ERROR;
+	else if (func(&(data + 1)->fork))
+		return ERROR;
 	if (show)
-		print("has taken a fork", vars);
-	return (0);
+		print("has taken a fork", data);
+	return (SUCCEEDED);
 }
 
-int mutex_destroy(t_vars *vars, int (*func)(pthread_mutex_t*)) {
-	if (func(&vars->fork))
-		return (-1);
-	if (vars->philosopher >= vars->number_of_philos && func(&(vars - vars->philosopher + 1)->fork))
-		return (-1);
-	else if (func(&(vars + 1)->fork))
-		return (-1);
-	else
-		return (0);
+int checker(t_data *data)
+{
+	if (get_current_time(data->update_time_2_die) >= data->args[TIME_2_DIE])
+		print_die(data);
+	if (data->args[N_O_T_E_P_M_E] && (data->eater[0] >= data->args[N_O_T_E_P_M_E] || data->eater[0] < 0))
+		return (ERROR);
+	return (SUCCEEDED);
 }
-
