@@ -39,12 +39,12 @@ void    my_usleep(long usec);
 int	    print(char *str, t_vars *vars);
 int     mutex(t_vars *vars, int (*func)(pthread_mutex_t*));
 int     mutex_destroy(t_vars *vars, int (*func)(pthread_mutex_t*));
-long	ft_atoi(const char *str);
+int     ft_atoi(const char *str);
 int     eating(t_vars *vars);
 int     thinking(t_vars *vars);
 int     sleeping(t_vars *vars);
-
-int	print_die(t_vars *vars);
+int     check_args(int ac, char **av);
+int     print_die(t_vars *vars);
 
 #endif
 

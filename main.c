@@ -38,8 +38,11 @@ void	init(int ac, char **av, t_vars **var)
 }
 
 int main(int ac, char **av) {
-	if (ac != 5 && ac != 6)
-		return (0);
+	if ((ac != 5 && ac != 6) || check_args(ac, av) == -1)
+	{
+		write(2, "Invalid Argemments !!\n", 22);
+		return (1);
+	}
 	int n = ft_atoi(av[1]);
 	t_vars *vars = malloc((n + 1) * sizeof(t_vars));
 	init(ac, av, &vars);
