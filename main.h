@@ -12,7 +12,7 @@
 #define FAILED      0
 #define SUCCEEDED   1
 
-#define CHECKER(data) if (!checker(data)) return (ERROR);
+#define CHECKER(data) if (!checker(data)) return (FAILED);
 
 typedef struct timeval t_time;
 
