@@ -67,5 +67,7 @@ int main(int ac, char **av)
 		if (data->eater[0] == -1)
 			break ;
 	}
+	free(data);
+	free(threads);
 	return (0);
 }
