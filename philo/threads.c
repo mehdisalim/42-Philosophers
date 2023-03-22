@@ -4,6 +4,8 @@ void	*philosopher(void *arg) {
 	t_data *data = (t_data *)arg;
 	if (gettimeofday(&data->update_time_2_die, NULL) == ERROR || thinking(data) == FAILED)
 		return (0);
+	// if(data->args[N_PHILOS] == 1)
+	// 	return 0;
 	while (eating(data) \
 			&& sleeping(data) \
 			&& (!data->args[N_O_T_E_P_M_E] \

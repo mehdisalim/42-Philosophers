@@ -38,9 +38,11 @@ int mutex(t_data *data, int (*func)(pthread_mutex_t*), int show) {
 		return ERROR;
 	if (show)
 		print("has taken a fork", data);
+	if(data->args[N_PHILOS] == 1)
+		return (FAILED);
 	if (data->args[ID] == data->args[N_PHILOS] && func(&(data - data->args[ID] + 1)->fork))
 		return ERROR;
-	else if (func(&(data + 1)->fork))
+	else if (data->args[ID] && func(&(data + 1)->fork))
 		return ERROR;
 	if (show)
 		print("has taken a fork", data);

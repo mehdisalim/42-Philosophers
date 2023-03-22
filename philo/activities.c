@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:04:26 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/21 13:44:53 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/22 09:51:13 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,11 @@ int thinking(t_data *data)
 int eating(t_data *data)
 {
 	CHECKER(data);
-	mutex(data, pthread_mutex_lock, 1);
+	if (!mutex(data, pthread_mutex_lock, 1))
+	{
+		print_die(data);
+		return (0);
+	}
 	CHECKER(data);
 	print("is eating", data);
 	pthread_mutex_lock(data->mutex_eat);
