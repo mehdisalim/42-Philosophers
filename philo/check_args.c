@@ -1,13 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_args.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/22 10:06:33 by esalim            #+#    #+#             */
+/*   Updated: 2023/03/22 10:07:57 by esalim           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "main.h"
 
-int ft_isdigit(char c)
+int	ft_isdigit(char c)
 {
 	return ((c >= '0' && c <= '9'));
 }
 
-int ft_strlen(const char *str)
+int	ft_strlen(const char *str)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (str[i])
 		i++;
 	return (i);
@@ -20,9 +34,9 @@ int	ft_atoi(const char *str)
 	int	sign;
 
 	if (!str || !*str)
-		return ERROR;
+		return (ERROR);
 	if (ft_strlen(str) > 10)
-		return ERROR;
+		return (ERROR);
 	i = 0;
 	result = 0;
 	sign = 1;
@@ -36,15 +50,17 @@ int	ft_atoi(const char *str)
 	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
 		i++;
 	if (str[i])
-		return ERROR;
+		return (ERROR);
 	return (result * sign);
 }
 
 int	check_args(int ac, char **av)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (++i < ac)
 		if (ft_atoi(av[i]) < 0)
-			return ERROR;
+			return (ERROR);
 	return (0);
 }

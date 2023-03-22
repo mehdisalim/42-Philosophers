@@ -6,20 +6,20 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:04:26 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/22 09:51:13 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/22 10:32:54 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-int thinking(t_data *data)
+int	thinking(t_data *data)
 {
 	CHECKER(data);
 	print("is thinking", data);
-    return (SUCCEEDED);
+	return (SUCCEEDED);
 }
 
-int eating(t_data *data)
+int	eating(t_data *data)
 {
 	CHECKER(data);
 	if (!mutex(data, pthread_mutex_lock, 1))
@@ -40,7 +40,7 @@ int eating(t_data *data)
 	return (SUCCEEDED);
 }
 
-int sleeping(t_data *data)
+int	sleeping(t_data *data)
 {
 	CHECKER(data);
 	print("is sleeping", data);
