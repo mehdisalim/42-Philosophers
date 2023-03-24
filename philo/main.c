@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:28:42 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/22 10:28:43 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/24 17:16:47 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,24 +60,26 @@ int main(int ac, char **av)
 	pthread_t *threads = malloc((n + 1) * sizeof(pthread_t));
 	int i;
 	i = -1;
-    struct timeval start_time;
-	if (!threads || gettimeofday(&start_time, NULL) < 0)
+	if (!threads)
 		return (1);
 	while (++i < n)
 	{
-		data[i].start_time = &start_time;
+		gettimeofday(&data[i].start_time, NULL);
+		gettimeofday(&data[i].update_time_2_die, NULL);
 		if (pthread_create(&threads[i], NULL, philosopher, &data[i]))
 			return (1);
 		if (data[i].args[ID] % 2 != 0)
-			my_usleep(10);
+				my_usleep(data, 100);
 	}
-	i = -1;
-	while(++i < n)
+	while(1)
 	{
-		if (pthread_join(threads[i], NULL))
-			return (1);
-		if (data->eater[0] == -1)
+		pthread_mutex_lock(data->mutex_eat);
+		if (data->eater[0] > -1)
+		{
+			pthread_mutex_unlock(data->mutex_eat);
 			break ;
+		}
+		pthread_mutex_unlock(data->mutex_eat);
 	}
 	free(data);
 	free(threads);

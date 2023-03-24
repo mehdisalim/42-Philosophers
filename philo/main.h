@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:23:46 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/22 10:27:51 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/24 15:38:40 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,17 @@ typedef struct s_data
 	pthread_mutex_t	*mutex_eat;
 	pthread_mutex_t	*exit_fork;
 	pthread_mutex_t	fork;
-	t_time			*start_time;
+	t_time			start_time;
 	t_time			update_time_2_die;
 }	t_data;
 
 // threads.c
 void	*philosopher(void *arg);
+void	*monitoring(void *args);
 
 // times.c
 long	get_current_time(t_time start_time);
-void	my_usleep(long usec);
+int		my_usleep(t_data *data, long usec);
 
 // philo_utils.c
 int		mutex(t_data *data, int (*func)(pthread_mutex_t*), int show);

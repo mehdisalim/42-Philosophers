@@ -6,14 +6,14 @@
 #    By: esalim <esalim@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/06 20:13:51 by esalim            #+#    #+#              #
-#    Updated: 2023/03/22 10:01:27 by esalim           ###   ########.fr        #
+#    Updated: 2023/03/24 17:14:44 by esalim           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= philo
 
 CC	=	cc
-CFLAGS	=	-Wall -Wextra -Werror -g #-fsanitize=thread
+CFLAGS	=	-Wall -Wextra -Werror -g -fsanitize=thread
 
 SRCS	=	main.c times.c philo_utils.c threads.c activities.c check_args.c
 

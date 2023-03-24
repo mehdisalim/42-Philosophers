@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:08:14 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/22 10:53:12 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/24 17:08:16 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ long	get_current_time(t_time start_time)
 	return (time);
 }
 
-void	my_usleep(long usec)
+int	my_usleep(t_data *data, long usec)
 {
 	t_time	begin;
 	long	start;
@@ -35,10 +35,13 @@ void	my_usleep(long usec)
 	end = start + usec;
 	while (1)
 	{
+		if (!checker(data))
+			return (FAILED);
 		gettimeofday(&begin, NULL);
 		now = begin.tv_sec * 1000000 + begin.tv_usec;
 		if (now >= end)
 			break ;
-		usleep(50);
+		usleep(10);
 	}
+	return (SUCCEEDED);
 }

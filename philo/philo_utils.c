@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:14:21 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/22 10:49:26 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/24 16:57:58 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	print(char *str, t_data *data){
 		return -1;
 	pthread_mutex_lock(data->mutex_eat);
 	if (data->eater[0] != -1)
-		printf("%ld %d %s\n", get_current_time((data->start_time)[0]), data->args[ID], str);
+		printf("%ld %d %s\n", get_current_time(data->start_time), data->args[ID], str);
 	pthread_mutex_unlock(data->mutex_eat);
 	if (pthread_mutex_unlock(&data->exit_fork[0]) == -1)
 		return -1;
@@ -35,11 +35,11 @@ int	print_die(t_data *data) {
 		pthread_mutex_unlock(&data->exit_fork[0]);
 		return ERROR;
 	}
-	printf("%ld %d died\n", get_current_time((data->start_time)[0]), data->args[ID]);
+	printf("%ld %d died\n", get_current_time(data->start_time), data->args[ID]);
 	data->eater[0] = -1;
 	if (pthread_mutex_unlock(data->mutex_eat) == -1)
 		return ERROR;
-	my_usleep(500);
+	my_usleep(data, 100);
 	if (pthread_mutex_unlock(&data->exit_fork[0]) == -1)
 		return ERROR;
 	return (SUCCEEDED);
