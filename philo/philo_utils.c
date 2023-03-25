@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:14:21 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/25 22:21:43 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/25 23:13:37 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,6 @@ int mutex(t_data *data, int (*func)(pthread_mutex_t*), int show) {
 		return ERROR;
 	if (show)
 		print("has taken a fork", data);
-	if(data->args[N_PHILOS] == 1)
-		return (FAILED);
 	if (data->args[ID] == data->args[N_PHILOS] && func(&(data - data->args[ID] + 1)->fork))
 		return ERROR;
 	else if (data->args[ID] && func(&(data + 1)->fork))
