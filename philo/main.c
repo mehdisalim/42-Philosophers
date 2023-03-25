@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:28:42 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/25 23:09:59 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/25 23:24:59 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int main(int ac, char **av)
 		if (pthread_create(&threads[i], NULL, philosopher, &data[i]))
 			return (1);
 		if (data[i].args[ID] % 2 != 0)
-			my_usleep(100);
+			my_usleep(50);
 		// my_usleep(10);
 	}
 	i = -1;
