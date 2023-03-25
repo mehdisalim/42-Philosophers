@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:14:21 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/22 10:49:26 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/25 22:21:43 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	print(char *str, t_data *data){
 		return -1;
 	pthread_mutex_lock(data->mutex_eat);
 	if (data->eater[0] != -1)
-		printf("%ld %d %s\n", get_current_time((data->start_time)[0]), data->args[ID], str);
+		printf("%ld %d %s\n", get_current_time(data->start_time), data->args[ID], str);
 	pthread_mutex_unlock(data->mutex_eat);
 	if (pthread_mutex_unlock(&data->exit_fork[0]) == -1)
 		return -1;
@@ -35,7 +35,7 @@ int	print_die(t_data *data) {
 		pthread_mutex_unlock(&data->exit_fork[0]);
 		return ERROR;
 	}
-	printf("%ld %d died\n", get_current_time((data->start_time)[0]), data->args[ID]);
+	printf("%ld %d died\n", get_current_time(data->start_time), data->args[ID]);
 	data->eater[0] = -1;
 	if (pthread_mutex_unlock(data->mutex_eat) == -1)
 		return ERROR;
@@ -58,19 +58,5 @@ int mutex(t_data *data, int (*func)(pthread_mutex_t*), int show) {
 		return ERROR;
 	if (show)
 		print("has taken a fork", data);
-	return (SUCCEEDED);
-}
-
-int checker(t_data *data)
-{
-	if (get_current_time(data->update_time_2_die) >= data->args[TIME_2_DIE])
-		print_die(data);
-	pthread_mutex_lock(data->mutex_eat);
-	if (data->args[N_O_T_E_P_M_E] && (data->eater[0] >= data->args[N_O_T_E_P_M_E] || data->eater[0] < 0))
-	{
-		pthread_mutex_unlock(data->mutex_eat);
-		return (FAILED);
-	}
-	pthread_mutex_unlock(data->mutex_eat);
 	return (SUCCEEDED);
 }

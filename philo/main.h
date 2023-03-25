@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:23:46 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/22 10:27:51 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/25 22:21:57 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@
 # define ERROR       -1
 # define FAILED      0
 # define SUCCEEDED   1
-
-# define CHECKER(data) if (!checker(data)) return (FAILED);
 
 typedef struct timeval	t_time;
 
@@ -46,7 +44,7 @@ typedef struct s_data
 	pthread_mutex_t	*mutex_eat;
 	pthread_mutex_t	*exit_fork;
 	pthread_mutex_t	fork;
-	t_time			*start_time;
+	t_time			start_time;
 	t_time			update_time_2_die;
 }	t_data;
 
