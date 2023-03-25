@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:23:46 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/24 15:38:40 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/25 23:18:04 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@
 # define ERROR       -1
 # define FAILED      0
 # define SUCCEEDED   1
-
-# define CHECKER(data) if (!checker(data)) return (FAILED);
 
 typedef struct timeval	t_time;
 

@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:28:42 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/24 17:16:47 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/25 23:18:01 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,17 +69,24 @@ int main(int ac, char **av)
 		if (pthread_create(&threads[i], NULL, philosopher, &data[i]))
 			return (1);
 		if (data[i].args[ID] % 2 != 0)
-				my_usleep(data, 100);
+			my_usleep(100);
+		// my_usleep(10);
 	}
-	while(1)
+	i = -1;
+	while (1)
 	{
-		pthread_mutex_lock(data->mutex_eat);
-		if (data->eater[0] > -1)
+		i = -1;
+		while(++i < n)
 		{
-			pthread_mutex_unlock(data->mutex_eat);
-			break ;
+			if (data[i].args[N_O_T_E_P_M_E] && data[i].eater[0] >= data[i].args[N_O_T_E_P_M_E])
+				return (0);
+			if (get_current_time(data[i].update_time_2_die) >= data[i].args[TIME_2_DIE])
+			{
+				pthread_mutex_lock(&data->exit_fork[0]);
+				printf("%ld %d died\n", get_current_time(data[i].start_time), data[i].args[ID]);
+				return (0);
+			}
 		}
-		pthread_mutex_unlock(data->mutex_eat);
 	}
 	free(data);
 	free(threads);

@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:14:21 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/24 16:57:58 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/25 23:18:18 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,27 +50,11 @@ int mutex(t_data *data, int (*func)(pthread_mutex_t*), int show) {
 		return ERROR;
 	if (show)
 		print("has taken a fork", data);
-	if(data->args[N_PHILOS] == 1)
-		return (FAILED);
 	if (data->args[ID] == data->args[N_PHILOS] && func(&(data - data->args[ID] + 1)->fork))
 		return ERROR;
 	else if (data->args[ID] && func(&(data + 1)->fork))
 		return ERROR;
 	if (show)
 		print("has taken a fork", data);
-	return (SUCCEEDED);
-}
-
-int checker(t_data *data)
-{
-	if (get_current_time(data->update_time_2_die) >= data->args[TIME_2_DIE])
-		print_die(data);
-	pthread_mutex_lock(data->mutex_eat);
-	if (data->args[N_O_T_E_P_M_E] && (data->eater[0] >= data->args[N_O_T_E_P_M_E] || data->eater[0] < 0))
-	{
-		pthread_mutex_unlock(data->mutex_eat);
-		return (FAILED);
-	}
-	pthread_mutex_unlock(data->mutex_eat);
 	return (SUCCEEDED);
 }
