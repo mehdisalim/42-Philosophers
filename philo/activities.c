@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:04:26 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/25 23:23:50 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/26 23:20:30 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int	eating(t_data *data)
 {
 	mutex(data, pthread_mutex_lock, 1);
 	print("is eating", data);
-	pthread_mutex_lock(data->mutex_eat);
 	gettimeofday(&data->update_time_2_die, NULL);
+	pthread_mutex_lock(data->mutex_eat);
 	data->eater[0]++;
 	pthread_mutex_unlock(data->mutex_eat);
 	my_usleep(data->args[TIME_2_EAT] * 1000);

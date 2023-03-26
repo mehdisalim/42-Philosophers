@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:23:46 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/25 22:21:57 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/26 17:17:34 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ typedef struct s_data
 
 // threads.c
 void	*philosopher(void *arg);
+void	*thread1(void *args);
+void	*thread2(void *args);
 
 // times.c
 long	get_current_time(t_time start_time);

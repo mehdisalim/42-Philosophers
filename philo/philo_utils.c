@@ -6,20 +6,16 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:14:21 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/25 23:23:36 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/26 23:20:19 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
 int	print(char *str, t_data *data){
-	if (pthread_mutex_lock(&data->exit_fork[0]) == -1)
-		return -1;
-	pthread_mutex_lock(data->mutex_eat);
+	pthread_mutex_lock(&data->exit_fork[0]);
 	printf("%ld %d %s\n", get_current_time(data->start_time), data->args[ID], str);
-	pthread_mutex_unlock(data->mutex_eat);
-	if (pthread_mutex_unlock(&data->exit_fork[0]) == -1)
-		return -1;
+	pthread_mutex_unlock(&data->exit_fork[0]);
 	return (0);
 }
 
