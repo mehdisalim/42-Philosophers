@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:28:42 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/26 23:28:30 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/28 16:29:03 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ int	init(int ac, char **av, t_data **var)
 		notepme = ft_atoi(av[5]) * n;
 	static int e = 0;
 	int i = -1;
-	static pthread_mutex_t efork;
+	static pthread_mutex_t m_print;
 	static pthread_mutex_t mutex_eat;
-	if (pthread_mutex_init(&efork, NULL) || pthread_mutex_init(&mutex_eat, NULL))
+	if (pthread_mutex_init(&m_print, NULL) || pthread_mutex_init(&mutex_eat, NULL))
 		return (ERROR);
 	while (++i < n) {
 		data[i].args[ID] = i + 1;
@@ -36,7 +36,7 @@ int	init(int ac, char **av, t_data **var)
 		data[i].args[TIME_2_SLEEP] = sleep;
 		data[i].args[N_O_T_E_P_M_E] = notepme;
 		data[i].eater = &e;
-		data[i].exit_fork = &efork;
+		data[i].mutex_print = &m_print;
 		data[i].mutex_eat = &mutex_eat;
 		if (pthread_mutex_init(&data[i].fork, NULL))
 			return (ERROR);
@@ -90,19 +90,43 @@ int main(int ac, char **av)
 		i = -1;
 		while(++i < n)
 		{
-			if (data[i].args[N_O_T_E_P_M_E] && data[i].eater[0] > data[i].args[N_O_T_E_P_M_E] + 1)
-				return (0);
+			pthread_mutex_lock(&data->mutex_eat[0]);
+			if (data->eater[0] == -1 || (data[i].args[N_O_T_E_P_M_E] && data[i].eater[0] > data[i].args[N_O_T_E_P_M_E] + 1))
+			{
+				pthread_mutex_unlock(&data->mutex_eat[0]);
+				// return 0;
+				break;
+			}
+			pthread_mutex_unlock(&data->mutex_eat[0]);
 			if (get_current_time(data[i].update_time_2_die) >= data[i].args[TIME_2_DIE])
 			{
-				pthread_mutex_lock(&data->exit_fork[0]);
+				pthread_mutex_lock(&data->mutex_eat[0]);
+				data->eater[0] = -1;
+				pthread_mutex_unlock(&data->mutex_eat[0]);
+				my_usleep(500);
+				pthread_mutex_lock(&data->mutex_print[0]);
 				printf("%ld %d died\n", get_current_time(data[i].start_time), data[i].args[ID]);
-				return (0);
+				pthread_mutex_unlock(&data->mutex_print[0]);
+				// return 0;
+				break;
 			}
 		}
+
+		pthread_mutex_lock(&data->mutex_eat[0]);
+		if (data->eater[0] == -1 || (data[i].args[N_O_T_E_P_M_E] && data[i].eater[0] > data[i].args[N_O_T_E_P_M_E] + 1))
+		{
+			pthread_mutex_unlock(&data->mutex_eat[0]);
+			// return 0;
+			break ;
+		}
+		pthread_mutex_unlock(&data->mutex_eat[0]);
 		// pthread_join(th2, (void **)&returnValue);
 		// if (returnValue)
 		// 	return (0);
 	}
+	i = -1;
+	while (++i < n)
+		pthread_join(threads[i], NULL);
 	free(data);
 	free(threads);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:11:16 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/26 23:27:44 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/28 16:32:05 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	*philosopher(void *args)
 	t_data	*data;
 
 	data = (t_data *)args;
-	if (gettimeofday(&data->update_time_2_die, NULL) < 0 || !thinking(data))
+	if (gettimeofday(&data->update_time_2_die, NULL) < 0)
 		return (0);
 	while (eating(data) \
 			&& sleeping(data) \
@@ -25,9 +25,9 @@ void	*philosopher(void *args)
 			|| data->eater[0] <= data->args[N_O_T_E_P_M_E]) \
 			&& thinking(data))
 		;
-	mutex(data, pthread_mutex_unlock, 0);
-	pthread_mutex_unlock(data->mutex_eat);
-	pthread_mutex_unlock(data->exit_fork);
+	// mutex(data, pthread_mutex_unlock, 0);
+	// pthread_mutex_unlock(data->mutex_eat);
+	// pthread_mutex_unlock(data->mutex_print);
 	return (0);
 }
 
@@ -44,7 +44,7 @@ void	*thread1(void *args)
 			return (&returnValue);
 		if (get_current_time(data[i].update_time_2_die) >= data[i].args[TIME_2_DIE])
 		{
-			pthread_mutex_lock(&data->exit_fork[0]);
+			pthread_mutex_lock(&data->mutex_print[0]);
 			printf("%ld %d died\n", get_current_time(data[i].start_time), data[i].args[ID]);
 			return (&returnValue);
 		}
@@ -64,7 +64,7 @@ void	*thread2(void *args)
 			return (&returnValue);
 		if (get_current_time(data[i].update_time_2_die) >= data[i].args[TIME_2_DIE])
 		{
-			pthread_mutex_lock(&data->exit_fork[0]);
+			pthread_mutex_lock(&data->mutex_print[0]);
 			printf("%ld %d died\n", get_current_time(data[i].start_time), data[i].args[ID]);
 			return (&returnValue);
 		}
