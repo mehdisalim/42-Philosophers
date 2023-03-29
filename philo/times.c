@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:08:14 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/26 23:22:56 by esalim           ###   ########.fr       */
+/*   Updated: 2023/03/28 22:04:26 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	my_usleep(long usec)
 	while (1)
 	{
 		gettimeofday(&begin, NULL);
-		if ((begin.tv_sec * 1000000 + begin.tv_usec) >= end)
+		if ((begin.tv_sec * 1000000 + begin.tv_usec) > end)
 			break ;
 		usleep(50);
 	}
