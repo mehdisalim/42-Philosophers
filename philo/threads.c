@@ -6,17 +6,19 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:11:16 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/29 21:22:25 by esalim           ###   ########.fr       */
+/*   Updated: 2023/04/01 16:52:04 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-int checker(t_data *data)
+int	checker(t_data *data)
 {
-	int res;
+	int	res;
+
 	pthread_mutex_lock(&data->mutex_eat[0]);
-	res = (!data->args[N_O_T_E_P_M_E] || data->eater[0] <= data->args[N_O_T_E_P_M_E] + 1);
+	res = (!data->args[N_O_T_E_P_M_E] \
+		|| data->eater[0] <= data->args[N_O_T_E_P_M_E] + 1);
 	pthread_mutex_unlock(&data->mutex_eat[0]);
 	return (res);
 }
@@ -31,7 +33,7 @@ void	*philosopher(void *args)
 	thinking(data);
 	while (eating(data) \
 			&& sleeping(data) \
-			&& checker(data)
+			&& checker(data) \
 			&& thinking(data))
 		;
 	mutex(data, pthread_mutex_unlock, 0);

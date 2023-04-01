@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:04:26 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/29 20:55:07 by esalim           ###   ########.fr       */
+/*   Updated: 2023/04/01 16:55:41 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ int	thinking(t_data *data)
 
 int	eating(t_data *data)
 {
+	long	time;
+
 	pthread_mutex_lock(&data->mutex_eat[0]);
 	if (data->eater[0] == -1)
 	{
@@ -41,7 +43,7 @@ int	eating(t_data *data)
 	if (data->eater[0] != -1)
 		data->eater[0]++;
 	pthread_mutex_unlock(&data->mutex_eat[0]);
-	long time = get_current_time(data->start_time);
+	time = get_current_time(data->start_time);
 	my_usleep(data->args[TIME_2_EAT] * 1000);
 	while (get_current_time(data->start_time) - time < data->args[TIME_2_EAT])
 		my_usleep(50);
@@ -51,6 +53,8 @@ int	eating(t_data *data)
 
 int	sleeping(t_data *data)
 {
+	long	time;
+
 	pthread_mutex_lock(&data->mutex_eat[0]);
 	if (data->eater[0] == -1)
 	{
@@ -59,7 +63,7 @@ int	sleeping(t_data *data)
 	}
 	pthread_mutex_unlock(&data->mutex_eat[0]);
 	print("is sleeping", data);
-	long time = get_current_time(data->start_time);
+	time = get_current_time(data->start_time);
 	my_usleep(data->args[TIME_2_SLEEP] * 1000);
 	while (get_current_time(data->start_time) - time < data->args[TIME_2_SLEEP])
 		my_usleep(50);

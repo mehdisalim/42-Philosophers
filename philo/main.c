@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:28:42 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/29 21:06:30 by esalim           ###   ########.fr       */
+/*   Updated: 2023/04/01 17:05:33 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 int	init(int ac, char **av, t_data **var)
 {
 	t_data *data = *var;
+	static pthread_mutex_t m_print;
+	static pthread_mutex_t mutex_eat;
+	static int e = 1;
 	int n = ft_atoi(av[1]);
 	int die = ft_atoi(av[2]);
 	int eat = ft_atoi(av[3]);
@@ -22,10 +25,7 @@ int	init(int ac, char **av, t_data **var)
 	int notepme = 0;
 	if (ac == 6)
 		notepme = ft_atoi(av[5]) * n;
-	static int e = 1;
 	int i = -1;
-	static pthread_mutex_t m_print;
-	static pthread_mutex_t mutex_eat;
 	if (pthread_mutex_init(&m_print, NULL) || pthread_mutex_init(&mutex_eat, NULL))
 		return (ERROR);
 	while (++i < n) {
@@ -44,37 +44,10 @@ int	init(int ac, char **av, t_data **var)
 	return (SUCCEEDED);
 }
 
-int main(int ac, char **av)
+void	main2(t_data *data, pthread_t *threads)
 {
-	if ((ac != 5 && ac != 6) || check_args(ac, av) == -1)
-	{
-		write(2, "Invalid Argemments !!\n", 22);
-		return (1);
-	}
-	int n = ft_atoi(av[1]);
-	if (!n)
-		return (0);
-	t_data *data = malloc((n + 1) * sizeof(t_data));
-	if (!data)
-		return (1);
-	if(init(ac, av, &data) == ERROR)
-		return (1);
-	pthread_t *threads = malloc((n + 1) * sizeof(pthread_t));
 	int i;
-	i = -1;
-    struct timeval start_time;
-	if (!threads || gettimeofday(&start_time, NULL) < 0)
-		return (1);
-	while (++i < n)
-	{
-		gettimeofday(&data[i].start_time, NULL);
-		gettimeofday(&data[i].update_time_2_die, NULL);
-		if (pthread_create(&threads[i], NULL, philosopher, &data[i]))
-			return (1);
-		if (data[i].args[ID] % 2 != 0)
-			my_usleep(20);
-	}
-	i = -1;
+	int n = data->args[N_PHILOS];
 	while (1)
 	{
 		i = -1;
@@ -109,6 +82,40 @@ int main(int ac, char **av)
 	i = -1;
 	while (++i < n)
 		pthread_detach(threads[i]);
+}
+
+int main(int ac, char **av)
+{
+	if ((ac != 5 && ac != 6) || check_args(ac, av) == -1)
+	{
+		write(2, "Invalid Argemments !!\n", 22);
+		return (1);
+	}
+	int n = ft_atoi(av[1]);
+	if (!n)
+		return (0);
+	t_data *data = malloc((n + 1) * sizeof(t_data));
+	if (!data)
+		return (1);
+	if(init(ac, av, &data) == ERROR)
+		return (1);
+	pthread_t *threads = malloc((n + 1) * sizeof(pthread_t));
+	int i;
+	i = -1;
+    struct timeval start_time;
+	if (!threads || gettimeofday(&start_time, NULL) < 0)
+		return (1);
+	while (++i < n)
+	{
+		gettimeofday(&data[i].start_time, NULL);
+		gettimeofday(&data[i].update_time_2_die, NULL);
+		if (pthread_create(&threads[i], NULL, philosopher, &data[i]))
+			return (1);
+		if (data[i].args[ID] % 2 != 0)
+			my_usleep(20);
+	}
+	i = -1;
+	main2(data, threads);
 	free(data);
 	free(threads);
 	return (0);
