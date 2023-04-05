@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:28:42 by esalim            #+#    #+#             */
-/*   Updated: 2023/04/01 17:05:33 by esalim           ###   ########.fr       */
+/*   Updated: 2023/04/05 21:16:43 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@ int	init(int ac, char **av, t_data **var)
 	int notepme = 0;
 	if (ac == 6)
 		notepme = ft_atoi(av[5]) * n;
+	if (n % 2)
+		notepme += n;
+	notepme++;
 	int i = -1;
 	if (pthread_mutex_init(&m_print, NULL) || pthread_mutex_init(&mutex_eat, NULL))
 		return (ERROR);
@@ -54,7 +57,7 @@ void	main2(t_data *data, pthread_t *threads)
 		while(++i < n)
 		{
 			pthread_mutex_lock(&data->mutex_eat[0]);
-			if (data->eater[0] == -1 || (data[i].args[N_O_T_E_P_M_E] && data[i].eater[0] > data[i].args[N_O_T_E_P_M_E] + 1))
+			if (data->eater[0] == -1 || (data[i].args[N_O_T_E_P_M_E] && data[i].eater[0] > data[i].args[N_O_T_E_P_M_E]))
 			{
 				pthread_mutex_unlock(&data->mutex_eat[0]);
 				break;
@@ -72,7 +75,7 @@ void	main2(t_data *data, pthread_t *threads)
 			}
 		}
 		pthread_mutex_lock(&data->mutex_eat[0]);
-		if (data->eater[0] == -1 || (data[i].args[N_O_T_E_P_M_E] && data[i].eater[0] > data[i].args[N_O_T_E_P_M_E] + 1))
+		if (data->eater[0] == -1 || (data[i].args[N_O_T_E_P_M_E] && data[i].eater[0] > data[i].args[N_O_T_E_P_M_E]))
 		{
 			pthread_mutex_unlock(&data->mutex_eat[0]);
 			break;
@@ -87,10 +90,7 @@ void	main2(t_data *data, pthread_t *threads)
 int main(int ac, char **av)
 {
 	if ((ac != 5 && ac != 6) || check_args(ac, av) == -1)
-	{
-		write(2, "Invalid Argemments !!\n", 22);
-		return (1);
-	}
+		return (write(2, "Invalid Argemments !!\n", 22), 1);
 	int n = ft_atoi(av[1]);
 	if (!n)
 		return (0);

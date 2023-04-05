@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:11:16 by esalim            #+#    #+#             */
-/*   Updated: 2023/04/01 16:52:04 by esalim           ###   ########.fr       */
+/*   Updated: 2023/04/05 21:15:00 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	checker(t_data *data)
 
 	pthread_mutex_lock(&data->mutex_eat[0]);
 	res = (!data->args[N_O_T_E_P_M_E] \
-		|| data->eater[0] <= data->args[N_O_T_E_P_M_E] + 1);
+		|| data->eater[0] <= data->args[N_O_T_E_P_M_E]);
 	pthread_mutex_unlock(&data->mutex_eat[0]);
 	return (res);
 }
