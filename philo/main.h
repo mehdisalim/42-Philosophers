@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:23:46 by esalim            #+#    #+#             */
-/*   Updated: 2023/03/29 17:53:20 by esalim           ###   ########.fr       */
+/*   Updated: 2023/04/10 13:58:05 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int		mutex(t_data *data, int (*func)(pthread_mutex_t*), int show);
 int		print_die(t_data *data);
 int		checker(t_data *data);
 int		print(char *str, t_data *data);
+int		*get_data(int ac, char **av);
 
 // check_args.c
 int		ft_atoi(const char *str);

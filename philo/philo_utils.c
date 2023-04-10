@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:14:21 by esalim            #+#    #+#             */
-/*   Updated: 2023/04/01 16:54:27 by esalim           ###   ########.fr       */
+/*   Updated: 2023/04/10 13:57:52 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 int	print(char *str, t_data *data)
 {
 	pthread_mutex_lock(&data->mutex_eat[0]);
+	if (get_current_time(data->update_time_2_die) >= data->args[TIME_2_DIE])
+	{
+		pthread_mutex_unlock(&data->mutex_eat[0]);
+		return (SUCCEEDED);
+	}
 	pthread_mutex_lock(&data->mutex_print[0]);
 	if (data->eater[0] != -1)
 		printf("%ld %d %s\n",
@@ -48,4 +53,26 @@ int	mutex(t_data *data, int (*func)(pthread_mutex_t*), int show)
 	}
 	pthread_mutex_unlock(&data->mutex_eat[0]);
 	return (SUCCEEDED);
+}
+
+int	*get_data(int ac, char **av)
+{
+	int	*data;
+
+	data = malloc(6 * sizeof(*data));
+	if (!data)
+		return (0);
+	data[0] = ft_atoi(av[1]);
+	data[1] = ft_atoi(av[2]);
+	data[2] = ft_atoi(av[3]);
+	data[3] = ft_atoi(av[4]);
+	data[4] = 0;
+	if (ac == 6)
+	{
+		data[4] = ft_atoi(av[5]) * data[0];
+		if (data[0] % 2)
+			data[4] += data[0];
+		(data[4])++;
+	}
+	return (data);
 }
