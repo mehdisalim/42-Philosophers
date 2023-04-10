@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:28:42 by esalim            #+#    #+#             */
-/*   Updated: 2023/04/10 14:06:47 by esalim           ###   ########.fr       */
+/*   Updated: 2023/04/10 15:38:02 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,11 @@ void	main2(t_data *data, pthread_t *threads, int n)
 	}
 	i = -1;
 	while (++i < n)
-		pthread_detach(threads[i]);
+		if (pthread_detach(threads[i]))
+			return ;
 }
 
-void	create_threads(pthread_t *threads, t_data *data, int n)
+int	create_threads(pthread_t *threads, t_data *data, int n)
 {
 	int				i;
 
@@ -102,10 +103,11 @@ void	create_threads(pthread_t *threads, t_data *data, int n)
 		gettimeofday(&data[i].start_time, NULL);
 		gettimeofday(&data[i].update_time_2_die, NULL);
 		if (pthread_create(&threads[i], NULL, philosopher, &data[i]))
-			return ;
+			return (ERROR);
 		if (data[i].args[ID] % 2 != 0)
 			my_usleep(20);
 	}
+	return (SUCCEEDED);
 }
 
 int	main(int ac, char **av)
@@ -121,7 +123,8 @@ int	main(int ac, char **av)
 	data = malloc((dt[0] + 1) * sizeof(t_data));
 	if (!threads || !data || !dt || init(dt, &data) == ERROR)
 		return (1);
-	create_threads(threads, data, dt[0]);
+	if (create_threads(threads, data, dt[0]) == ERROR)
+		return (1);
 	main2(data, threads, dt[0]);
 	free(data);
 	free(dt);
