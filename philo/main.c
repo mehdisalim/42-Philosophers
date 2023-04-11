@@ -6,7 +6,7 @@
 /*   By: esalim <esalim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 10:28:42 by esalim            #+#    #+#             */
-/*   Updated: 2023/04/10 15:38:02 by esalim           ###   ########.fr       */
+/*   Updated: 2023/04/11 21:45:40 by esalim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ int	checking_philosophers(t_data *data, int n, int i)
 	while (++i < n)
 	{
 		pthread_mutex_lock(&data->mutex_eat[0]);
-		if (data->eater[0] == -1 || (data[i].args[N_O_T_E_P_M_E] \
-				&& data[i].eater[0] > data[i].args[N_O_T_E_P_M_E]))
+		if (data->eater[0] < 0 || (data[i].args[N_O_T_E_P_M_E] \
+				&& data->eater[0] >= data[i].args[N_O_T_E_P_M_E]))
 		{
 			pthread_mutex_unlock(&data->mutex_eat[0]);
 			break ;
@@ -59,7 +59,7 @@ int	checking_philosophers(t_data *data, int n, int i)
 		if (time >= data[i].args[TIME_2_DIE])
 		{
 			pthread_mutex_lock(&data->mutex_eat[0]);
-			data->eater[0] = -1;
+			data->eater[0] = -500;
 			pthread_mutex_unlock(&data->mutex_eat[0]);
 			pthread_mutex_lock(&data->mutex_print[0]);
 			time = get_current_time(data[i].start_time);
@@ -79,7 +79,7 @@ void	main2(t_data *data, pthread_t *threads, int n)
 		i = -1;
 		i = checking_philosophers(data, n, i);
 		pthread_mutex_lock(&data->mutex_eat[0]);
-		if (data->eater[0] == -1 || (data[i].args[N_O_T_E_P_M_E] \
+		if (data->eater[0] < 0 || (data[i].args[N_O_T_E_P_M_E] \
 			&& data[i].eater[0] > data[i].args[N_O_T_E_P_M_E]))
 		{
 			pthread_mutex_unlock(&data->mutex_eat[0]);
